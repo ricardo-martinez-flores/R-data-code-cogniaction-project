@@ -1,0 +1,81 @@
+# Rename data
+data <- datos3
+
+library(lme4)
+library(fitdistrplus)
+library(tidyverse)
+library(ggplot2)
+library(sjPlot)
+library(emmeans)
+library(ggeffects)
+
+# Convert to factor
+data$condition <- as.factor(data$condition)
+data$participant <- as.factor(data$participant)
+data$item <- as.factor(data$item)
+
+# Display levels
+levels(data$condition)
+
+# Relevel
+data$condition <- relevel(data$condition, 3)
+
+### Mixed-effect model ###
+lm1 <- lmer(Average_pupil_diameter ~ condition + (1 | participant) + (1 | item), data = data)
+summary_m <- summary(lm1)
+tab_model(lm1, show.se = TRUE, show.est = TRUE, show.p = TRUE, show.stat = TRUE)
+plot_model(lm1, type = "pred", terms = c("condition"))
+
+lm2<-glmer(durfix ~ condition + (1|participant) + (1|item), 
+           data = data, 
+           family = inverse.gaussian(link = "log"))
+summary(lm2)
+tab_model(lm2, show.se = T, show.est = T, show.p = T, show.stat = T)
+plot_model(lm2,type = "pred", terms = c("condition"))
+
+lm3<- glmer(numfix ~ condition + (1|participant) + (1|item), 
+                  data = data, 
+                  family = poisson (link = "log"))
+summary(lm3)
+tab_model(lm3, show.se = T, show.est = T, show.p = T, show.stat = T)
+plot_model(lm3,type = "pred", terms = c("condition"))
+
+###### Models without pupil (Total effect) ######
+lm6 <- glmer(CS ~ condition + (1 | participant) + (1 | item), data = data, family = "poisson")
+summary(lm6)
+tab_model(lm6, show.se = TRUE, show.est = TRUE, show.p = TRUE, show.stat = TRUE)
+plot_model(lm6, type = "pred", terms = c("condition"))
+
+lm7 <- glmer(BT ~ condition + (1 | participant) + (1 | item), data = data, family = "poisson")
+summary(lm7)
+tab_model(lm7, show.se = TRUE, show.est = TRUE, show.p = TRUE, show.stat = TRUE)
+plot_model(lm7, type = "pred", terms = c("condition"))
+
+lm8 <- glmer(MS ~ condition + (1 | participant) + (1 | item), data = data, family = "poisson", control = glmerControl(optimizer = "Nelder_Mead", optCtrl = list(maxfun = 40000)))
+summary(lm8)
+tab_model(lm8, show.se = TRUE, show.est = TRUE, show.p = TRUE, show.stat = TRUE)
+plot_model(lm8, type = "pred", terms = c("condition"))
+
+######## Model adjustment with pupil (Direct effect) #######
+lm6_new <- glmer(CS ~ condition + Average_pupil_diameter + (1 | participant) + (1 | item), 
+                 data = data, 
+                 family = "poisson")
+summary(lm6_new)
+tab_model(lm6_new, show.se = TRUE, show.est = TRUE, show.p = TRUE, show.stat = TRUE)
+plot_model(lm6_new, type = "pred", terms = c("condition", "Average_pupil_diameter"))
+
+lm7_new <- glmer(BT ~ condition + Average_pupil_diameter + (1 | participant) + (1 | item), 
+                 data = data, 
+                 family = "poisson")
+summary(lm7_new)
+tab_model(lm7_new, show.se = TRUE, show.est = TRUE, show.p = TRUE, show.stat = TRUE)
+plot_model(lm7_new, type = "pred", terms = c("condition", "Average_pupil_diameter"))
+
+lm8_new <- glmer(MS ~ condition + Average_pupil_diameter + (1 | participant) + (1 | item), 
+                 data = data, 
+                 family = "poisson", 
+                 control = glmerControl(optimizer = "Nelder_Mead", optCtrl = list(maxfun = 40000)))
+summary(lm8_new)
+tab_model(lm8_new, show.se = TRUE, show.est = TRUE, show.p = TRUE, show.stat = TRUE)
+plot_model(lm8_new, type = "pred", terms = c("condition", "Average_pupil_diameter"))
+
