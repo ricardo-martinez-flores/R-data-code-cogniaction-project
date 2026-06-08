@@ -1,3 +1,35 @@
+# lmm_cogniaccion_paper1.R
+#
+# Mixed-effects model analysis -- Cogni-Action Project, Paper 1
+#
+# Reference:
+#   Martinez-Flores, R., Julio, C., Ibanez, R., Campos-Rojas, C., Jarpa, M.,
+#   Super, H., Tari, B., & Cristi-Montero, C. (2025).
+#   Impact of physical activity modalities on text processing and comprehension
+#   in adolescents. The Journal of Experimental Education, 1-16.
+#   https://doi.org/10.1080/00220973.2025.2513244
+#
+# Outcomes:
+#   - Average_pupil_diameter: mean pupil dilation (cognitive load indicator)
+#   - durfix: fixation duration (inverse Gaussian, log link)
+#   - numfix: number of fixations (Poisson, log link)
+#   - CS, BT, MS: reading comprehension scores (Poisson, log link)
+#
+# Design:
+#   Crossover trial, 32 adolescents, 3 conditions (SC, MICT, C-HIIT).
+#   Random effects: participant and item (text).
+#   Models without pupil = total effect of condition on comprehension.
+#   Models with pupil = direct effect controlling for cognitive load.
+#
+# Note:
+#   This script is shared as companion code to the published paper.
+#   It reflects the analysis as submitted and should not be adapted
+#   without understanding the original design and research question.
+#   For guidance: ricardo.antonio.martinezf@gmail.com
+#
+# Author: Ricardo Martinez-Flores
+# License: CC BY 4.0
+
 # Rename data
 data <- datos3
 
